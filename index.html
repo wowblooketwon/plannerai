@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Real AI Bot</title>
+  <title>Real AI Chat</title>
   <style>
     body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
-    #chat { height: 300px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; }
-    input, button { padding: 10px; font-size: 16px; margin-top: 10px; }
+    #chat { height: 300px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; margin-bottom: 10px; }
+    input, button { padding: 10px; font-size: 16px; }
     input { width: 70%; }
-    button { background: #0f0; border: none; cursor: pointer; color: #000; }
+    button { background: #0f0; color: #000; border: none; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h1>🤖 Real AI Bot</h1>
+  <h1>🤖 Real AI Chat</h1>
   <div id="chat"></div>
   <input type="text" id="userInput" placeholder="Say something...">
   <button onclick="sendMessage()">Send</button>
 
   <script>
     const chat = document.getElementById('chat');
+    const apiKey = "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";
 
     function appendMessage(sender, text) {
       chat.innerHTML += `<p><strong>${sender}:</strong> ${text}</p>`;
@@ -27,11 +28,11 @@
 
     async function sendMessage() {
       const input = document.getElementById('userInput');
-      const userMessage = input.value.trim();
-      if (!userMessage) return;
+      const userText = input.value.trim();
+      if (!userText) return;
 
-      appendMessage("You", userMessage);
-      input.value = '';
+      appendMessage("You", userText);
+      input.value = "";
       appendMessage("Bot", "typing...");
 
       try {
@@ -39,23 +40,31 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: userMessage }]
+            messages: [{ role: "user", content: userText }]
           })
         });
 
         const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || "No reply 🤔";
+        console.log(data); // 👀 See full API response in browser console
 
         chat.lastChild.remove(); // Remove "typing..."
-        appendMessage("Bot", reply);
-      } catch (error) {
+
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+          appendMessage("Bot", data.choices[0].message.content.trim());
+        } else if (data.error) {
+          appendMessage("Bot", "Error: " + data.error.message);
+        } else {
+          appendMessage("Bot", "No valid reply from AI.");
+        }
+
+      } catch (err) {
         chat.lastChild.remove();
-        appendMessage("Bot", "Error bruh ❌");
-        console.error(error);
+        appendMessage("Bot", "Error talking to GPT ❌");
+        console.error(err);
       }
     }
   </script>

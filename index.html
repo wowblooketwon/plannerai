@@ -3,349 +3,319 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Chatbot - Lil Scoom Vibe</title>
+<title>Lil Scoom AI Chatbot</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
   /* Reset */
   * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0; padding: 0; box-sizing: border-box;
   }
 
   body {
-    background: #0b0c12; /* dark midnight */
-    color: #d3d7df;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121217; /* deep dark */
+    font-family: 'Inter', sans-serif;
+    color: #ddd;
+    display: flex;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
-  }
-
-  .chat-container {
-    position: relative;
-    width: 420px;
-    max-width: 95vw;
-    height: 600px;
-    background: #181a24;
-    border-radius: 14px;
-    box-shadow:
-      0 0 8px #0f0f18,
-      0 0 15px #0f0f18 inset,
-      0 0 30px #0ff;
-    border: 3px solid #0ff;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Neon border effect on all 4 sides with slight glow */
-  .chat-container::before,
-  .chat-container::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-  }
-  .chat-container::before {
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #0ff, #03a9f4);
-    filter: drop-shadow(0 0 5px #0ff);
-    border-radius: 14px 14px 0 0;
-  }
-  .chat-container::after {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #03a9f4, #0ff);
-    filter: drop-shadow(0 0 5px #0ff);
-    border-radius: 0 0 14px 14px;
-  }
-
-  .chat-header {
-    background: #0f131f;
-    padding: 14px 20px;
-    border-bottom: 2px solid #03a9f4;
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-radius: 14px 14px 0 0;
-  }
-
-  .chat-header .title {
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: #0ff;
-    letter-spacing: 0.04em;
     user-select: none;
   }
 
-  .upgrade-btn {
-    background: #03a9f4;
-    border: none;
-    color: #0b0c12;
-    font-weight: 700;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  .upgrade-btn:hover {
-    background: #00e5ff;
-  }
-
-  .chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+  #app {
+    width: 420px;
+    height: 680px;
+    background: linear-gradient(145deg, #1e1e29, #121217);
+    border-radius: 20px;
+    box-shadow:
+      0 0 20px #00cfff55,
+      inset 0 0 30px #00cfff44;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    scrollbar-width: thin;
-    scrollbar-color: #0ff transparent;
-  }
-  .chat-messages::-webkit-scrollbar {
-    width: 8px;
-  }
-  .chat-messages::-webkit-scrollbar-thumb {
-    background: #0ff;
-    border-radius: 6px;
+    overflow: hidden;
   }
 
-  /* Message bubbles */
-  .message {
-    max-width: 80%;
-    padding: 12px 18px;
-    border-radius: 18px;
-    font-size: 1rem;
-    line-height: 1.3;
-  }
-  .message.user {
-    background: linear-gradient(135deg, #05f, #0ff);
-    color: #0b0c12;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    box-shadow: 0 0 8px #0ff44a;
-  }
-  .message.bot {
-    background: #212638;
-    color: #a0cfff;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-    box-shadow: 0 0 4px #0ff;
-  }
-
-  .chat-input-area {
-    padding: 12px 20px;
-    background: #0f131f;
-    border-top: 2px solid #03a9f4;
-    border-radius: 0 0 14px 14px;
+  header {
+    padding: 20px 30px;
+    background: #11111a;
+    border-bottom: 1px solid #0bb4ff44;
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .chat-input-area input {
-    flex: 1;
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1rem;
-    background: #23283f;
-    color: #d3d7df;
-  }
-
-  .chat-input-area input::placeholder {
-    color: #6a7a9c;
-  }
-
-  .chat-input-area button {
-    background: #03a9f4;
-    border: none;
-    color: #0b0c12;
+  header h1 {
     font-weight: 700;
-    padding: 10px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    font-size: 1.6rem;
+    color: #00cfff;
+    letter-spacing: 0.07em;
+    font-feature-settings: "liga" 0;
   }
-  .chat-input-area button:hover {
+
+  button#upgrade {
+    background: #00cfff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #121217;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  button#upgrade:hover {
     background: #00e5ff;
   }
 
-  /* Bot avatar style */
-  .bot-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #0ff, #03a9f4);
-    border-radius: 50%;
-    box-shadow: 0 0 12px #0ff;
-    margin-right: 12px;
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #121217;
+    padding: 25px 30px;
+    overflow-y: auto;
+    gap: 20px;
+  }
+
+  /* Scrollbar */
+  main::-webkit-scrollbar {
+    width: 8px;
+  }
+  main::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  main::-webkit-scrollbar-thumb {
+    background: #00cfffaa;
+    border-radius: 10px;
+  }
+
+  .message {
+    max-width: 75%;
+    padding: 14px 20px;
+    border-radius: 24px;
+    font-size: 1rem;
+    line-height: 1.3;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    word-break: break-word;
+  }
+
+  .message.user {
+    margin-left: auto;
+    background: #00cfff;
+    color: #121217;
+    box-shadow: 0 0 20px #00cfffcc;
+    border-bottom-right-radius: 5px;
+  }
+
+  .message.bot {
+    background: #1f2838;
+    color: #a9cfff;
+    box-shadow: 0 0 10px #00cfff88;
+    border-bottom-left-radius: 5px;
+  }
+
+  .avatar {
     flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00cfff, #0098d3);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 900;
-    color: #0b0c12;
+    font-size: 1.5rem;
+    color: #121217;
     user-select: none;
-    font-family: monospace;
+    box-shadow: 0 0 8px #00cfffbb;
   }
 
-  /* Modal styles */
-  .modal-bg {
-    display: none;
+  /* Input area */
+  form#input-area {
+    padding: 18px 30px;
+    background: #11111a;
+    border-top: 1px solid #0bb4ff44;
+    display: flex;
+    gap: 16px;
+  }
+
+  form#input-area input {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 30px;
+    border: none;
+    background: #202338;
+    color: #ddd;
+    font-size: 1rem;
+    font-weight: 400;
+    outline-offset: 2px;
+    outline-color: #00cfff44;
+  }
+  form#input-area input::placeholder {
+    color: #5a82ac;
+  }
+
+  form#input-area button {
+    background: #00cfff;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-weight: 700;
+    color: #121217;
+    cursor: pointer;
+    font-size: 1rem;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  form#input-area button:hover {
+    background: #00e5ff;
+  }
+
+  /* Modal */
+  #modal-bg {
     position: fixed;
     inset: 0;
-    background: rgba(11, 12, 18, 0.8);
-    backdrop-filter: blur(8px);
-    align-items: center;
+    background: rgba(18, 18, 23, 0.9);
+    backdrop-filter: blur(12px);
+    display: none;
     justify-content: center;
-    z-index: 1000;
+    align-items: center;
+    z-index: 9999;
   }
 
-  .modal-bg.active {
+  #modal-bg.active {
     display: flex;
   }
 
-  .modal {
-    background: #181a24;
-    border-radius: 16px;
-    padding: 24px 32px;
-    max-width: 320px;
+  #modal {
+    background: #1a1b26;
+    border-radius: 24px;
+    padding: 36px 40px;
+    box-shadow: 0 0 40px #00cfffbb;
+    max-width: 360px;
     text-align: center;
-    box-shadow: 0 0 30px #0ff;
-    border: 2px solid #0ff;
+    color: #a9cfff;
   }
 
-  .modal h2 {
-    color: #0ff;
-    margin-bottom: 14px;
-  }
-
-  .modal p {
-    color: #cde7ff;
-    margin-bottom: 24px;
-    font-size: 1rem;
-  }
-
-  .modal button {
-    background: #03a9f4;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 12px;
+  #modal h2 {
+    color: #00cfff;
     font-weight: 700;
-    cursor: pointer;
-    color: #0b0c12;
-    transition: background 0.3s ease;
+    font-size: 1.8rem;
+    margin-bottom: 18px;
   }
 
-  .modal button:hover {
+  #modal p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.4;
+  }
+
+  #modal button {
+    padding: 14px 32px;
+    border-radius: 30px;
+    border: none;
+    background: #00cfff;
+    color: #121217;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #modal button:hover {
     background: #00e5ff;
   }
+
 </style>
 </head>
 <body>
-
-<div class="chat-container" role="main" aria-label="AI chatbot interface">
-  <header class="chat-header">
-    <div class="title">Lil Scoom AI Bot</div>
-    <button class="upgrade-btn" id="upgradeBtn">Upgrade Plan</button>
-  </header>
-
-  <section class="chat-messages" id="chatMessages" aria-live="polite" aria-atomic="false">
-    <!-- Messages will appear here -->
-  </section>
-
-  <form class="chat-input-area" id="chatForm" aria-label="Send message form">
-    <input type="text" id="chatInput" placeholder="Say wsg bru..." autocomplete="off" required aria-required="true" />
-    <button type="submit" aria-label="Send message">Send</button>
-  </form>
-</div>
-
-<!-- Modal -->
-<div class="modal-bg" id="modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal">
-    <h2 id="modalTitle">Upgrade Plan</h2>
-    <p>Upgrade to Lil Scoom Pro for extra perks and epic AI power 💥🔥</p>
-    <button id="closeModalBtn">Close</button>
+  <div id="app" role="main" aria-label="Lil Scoom AI chatbot interface">
+    <header>
+      <h1>Lil Scoom AI</h1>
+      <button id="upgrade" aria-label="Upgrade plan">Upgrade</button>
+    </header>
+    <main id="messages" aria-live="polite" aria-atomic="false"></main>
+    <form id="input-area" aria-label="Send a message">
+      <input type="text" id="input" placeholder="Say wsg bru..." autocomplete="off" required />
+      <button type="submit" aria-label="Send message">Send</button>
+    </form>
   </div>
-</div>
+
+  <div id="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+    <div id="modal">
+      <h2 id="modal-title">Upgrade to Lil Scoom Pro</h2>
+      <p id="modal-desc">Unlock exclusive features and next-level AI power. Hit me up later for details 👀</p>
+      <button id="modal-close">Close</button>
+    </div>
+  </div>
 
 <script>
-  const chatForm = document.getElementById('chatForm');
-  const chatInput = document.getElementById('chatInput');
-  const chatMessages = document.getElementById('chatMessages');
-  const upgradeBtn = document.getElementById('upgradeBtn');
-  const modalBg = document.getElementById('modalBg');
-  const closeModalBtn = document.getElementById('closeModalBtn');
+  const messages = document.getElementById('messages');
+  const form = document.getElementById('input-area');
+  const input = document.getElementById('input');
+  const upgradeBtn = document.getElementById('upgrade');
+  const modalBg = document.getElementById('modal-bg');
+  const modalClose = document.getElementById('modal-close');
 
-  // Function to add message
-  function addMessage(text, sender = 'bot') {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender);
-    if(sender === 'bot') {
+  function createMessage(text, sender) {
+    const messageEl = document.createElement('div');
+    messageEl.className = `message ${sender}`;
+
+    if (sender === 'bot') {
       const avatar = document.createElement('div');
-      avatar.className = 'bot-avatar';
-      avatar.textContent = '👾'; // lil scoom avatar emoji style
-      msgDiv.appendChild(avatar);
+      avatar.className = 'avatar';
+      avatar.textContent = '💀'; // lil scoom vibe emoji
+      messageEl.appendChild(avatar);
     }
-    const textNode = document.createElement('span');
-    textNode.textContent = text;
-    msgDiv.appendChild(textNode);
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    const textEl = document.createElement('div');
+    textEl.textContent = text;
+    messageEl.appendChild(textEl);
+
+    messages.appendChild(messageEl);
+    messages.scrollTop = messages.scrollHeight;
   }
 
-  // Simple bot response logic (echo + example)
-  function botReply(userText) {
-    let reply = "wsg bru I heard: " + userText;
-    // Add some flair
-    if(userText.toLowerCase().includes('hello') || userText.toLowerCase().includes('yo')) {
-      reply = "Yo wsg bru! How can Lil Scoom help?";
-    } else if(userText.toLowerCase().includes('upgrade')) {
-      reply = "Hit the upgrade plan button above to get the pro swag 🔥";
-    }
-    return reply;
+  // For demo, simple echo with flavor
+  function botResponse(userText) {
+    userText = userText.toLowerCase();
+    if(userText.includes('hello') || userText.includes('yo')) return "Yo wsg bru! Lil Scoom here to help.";
+    if(userText.includes('upgrade')) return "Hit that upgrade button above for the pro perks.";
+    return "Bru, I heard you say: " + userText;
   }
 
-  chatForm.addEventListener('submit', (e) => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    const userText = chatInput.value.trim();
-    if(!userText) return;
+    const text = input.value.trim();
+    if(!text) return;
+    createMessage(text, 'user');
+    input.value = '';
+    createMessage("Lil Scoom AI is thinking...", 'bot');
 
-    // Show user message
-    addMessage(userText, 'user');
-    chatInput.value = '';
-
-    // Simulate bot reply delay
     setTimeout(() => {
-      addMessage(botReply(userText), 'bot');
-    }, 700);
+      // remove thinking message
+      const lastBot = [...messages.querySelectorAll('.message.bot')].pop();
+      if(lastBot && lastBot.textContent.includes('thinking')) messages.removeChild(lastBot);
+
+      createMessage(botResponse(text), 'bot');
+    }, 900);
   });
 
-  // Upgrade button shows modal
   upgradeBtn.addEventListener('click', () => {
     modalBg.classList.add('active');
   });
-
-  closeModalBtn.addEventListener('click', () => {
+  modalClose.addEventListener('click', () => {
     modalBg.classList.remove('active');
   });
-
-  // Close modal if click outside modal content
-  modalBg.addEventListener('click', (e) => {
-    if(e.target === modalBg) {
-      modalBg.classList.remove('active');
-    }
+  modalBg.addEventListener('click', e => {
+    if(e.target === modalBg) modalBg.classList.remove('active');
   });
 
-  // Greet user on load
-  addMessage("Yo wsg bru! Im Lil Scoom AI, hit me up!", 'bot');
+  // greet
+  createMessage("Yo wsg bru! Im Lil Scoom AI, hit me up!", 'bot');
 </script>
-
 </body>
 </html>

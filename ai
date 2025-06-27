@@ -2,46 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AI Bot</title>
+  <title>Real AI Bot</title>
   <style>
-    body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
-    #chat { max-height: 300px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; }
-    input { width: 80%; padding: 8px; }
-    button { padding: 8px 12px; }
+    body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
+    #chat { height: 300px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; }
+    input, button { padding: 10px; font-size: 16px; margin-top: 10px; }
+    input { width: 70%; }
+    button { background: #0f0; border: none; cursor: pointer; color: #000; }
   </style>
 </head>
 <body>
-  <h1>🤖 AI RQ Bot</h1>
-  <div id="chat"></div><br>
+  <h1>🤖 Real AI Bot</h1>
+  <div id="chat"></div>
   <input type="text" id="userInput" placeholder="Say something...">
   <button onclick="sendMessage()">Send</button>
 
   <script>
     const chat = document.getElementById('chat');
 
-    function sendMessage() {
-      const input = document.getElementById('userInput');
-      const userText = input.value;
-      appendMessage('You', userText);
-      input.value = '';
-      
-      getBotReply(userText);
-    }
-
     function appendMessage(sender, text) {
       chat.innerHTML += `<p><strong>${sender}:</strong> ${text}</p>`;
       chat.scrollTop = chat.scrollHeight;
     }
 
-    function getBotReply(msg) {
-      // 🧠 Simple AI Response (replace with real API later)
-      let reply = "huh?";
-      if (msg.toLowerCase().includes("wsg")) reply = "wsg lil bro 😈";
-      else if (msg.toLowerCase().includes("who made you")) reply = "Lil Bro did 🐐";
-      else if (msg.toLowerCase().includes("bye")) reply = "ight bye bru 👋";
-      else reply = "I feel you 😶‍🌫️";
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
 
-      setTimeout(() => appendMessage("Bot", reply), 500);
+      appendMessage("You", userMessage);
+      input.value = '';
+      appendMessage("Bot", "typing...");
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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"
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: userMessage }]
+          })
+        });
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || "No reply 🤔";
+
+        chat.lastChild.remove(); // Remove "typing..."
+        appendMessage("Bot", reply);
+      } catch (error) {
+        chat.lastChild.remove();
+        appendMessage("Bot", "Error bruh ❌");
+        console.error(error);
+      }
     }
   </script>
 </body>

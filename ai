@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Bot</title>
+  <style>
+    body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
+    #chat { max-height: 300px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; }
+    input { width: 80%; padding: 8px; }
+    button { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>🤖 AI RQ Bot</h1>
+  <div id="chat"></div><br>
+  <input type="text" id="userInput" placeholder="Say something...">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const chat = document.getElementById('chat');
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const userText = input.value;
+      appendMessage('You', userText);
+      input.value = '';
+      
+      getBotReply(userText);
+    }
+
+    function appendMessage(sender, text) {
+      chat.innerHTML += `<p><strong>${sender}:</strong> ${text}</p>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getBotReply(msg) {
+      // 🧠 Simple AI Response (replace with real API later)
+      let reply = "huh?";
+      if (msg.toLowerCase().includes("wsg")) reply = "wsg lil bro 😈";
+      else if (msg.toLowerCase().includes("who made you")) reply = "Lil Bro did 🐐";
+      else if (msg.toLowerCase().includes("bye")) reply = "ight bye bru 👋";
+      else reply = "I feel you 😶‍🌫️";
+
+      setTimeout(() => appendMessage("Bot", reply), 500);
+    }
+  </script>
+</body>
+</html>

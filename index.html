@@ -2,268 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scoom AI</title>
-  <style>
-    :root {
-      --bg: #000;
-      --text: #0f0;
-      --bubble-user: #0f0;
-      --bubble-bot: #111;
-      --bubble-bot-border: #0f0;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      border: 10px solid #00ff88;
-      box-shadow: 0 0 20px #00ff88;
-    }
-
-    .chat-container {
-      width: 95%;
-      max-width: 480px;
-      height: 95%;
-      background: var(--bg);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-    }
-
-    #chat {
-      flex: 1;
-      overflow-y: auto;
-      background: #111;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bubble {
-      padding: 10px 14px;
-      border-radius: 20px;
-      max-width: 80%;
-      margin: 5px 0;
-      display: inline-block;
-      line-height: 1.4;
-    }
-
-    .user {
-      background: var(--bubble-user);
-      color: #000;
-      align-self: flex-end;
-      border-bottom-right-radius: 0;
-    }
-
-    .bot {
-      background: var(--bubble-bot);
-      color: var(--text);
-      align-self: flex-start;
-      border: 1px solid var(--bubble-bot-border);
-      border-bottom-left-radius: 0;
-    }
-
-    .input-area {
-      display: flex;
-      gap: 5px;
-    }
-
-    input[type="text"] {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
-      background: #222;
-      color: var(--text);
-      border: none;
-      border-radius: 8px;
-    }
-
-    button, .upload-label {
-      padding: 10px 12px;
-      font-weight: bold;
-      background: #0f0;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .upload-label {
-      display: flex;
-      align-items: center;
-      background: #0f0;
-    }
-
-    input[type="file"] {
-      display: none;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .theme-btn, .upgrade-btn {
-      padding: 6px 10px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .theme-btn {
-      background: #222;
-      color: #0f0;
-    }
-
-    .upgrade-btn {
-      background: gold;
-      color: #000;
-    }
-
-    img.preview {
-      max-width: 100%;
-      max-height: 150px;
-      border-radius: 10px;
-      margin-top: 5px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scoom AI Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="chat-container">
-    <div class="top-bar">
-      <button class="theme-btn" onclick="switchTheme()">Theme: Dark</button>
-      <button class="upgrade-btn">Upgrade Pro 💎</button>
-    </div>
-
-    <div id="chat"></div>
-
-    <div class="input-area">
-      <label class="upload-label">
-        📷
-        <input type="file" accept="image/*" id="photoUpload" onchange="handlePhoto(event)">
-      </label>
-      <input type="text" id="userInput" placeholder="Say something...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
+  <div class="phone">
+    <div class="header">Lil Scoom AI Chat</div>
+    <div id="chat" class="chat-window"></div>
+    <form id="chat-form" class="input-area">
+      <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
   </div>
 
   <script>
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('userInput');
-    const themeBtn = document.querySelector('.theme-btn');
-    let currentTheme = "dark";
-    const apiKey = "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";
-    let chatHistory = [];
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatWindow = document.getElementById('chat');
 
-    function appendMessage(role, text) {
-      const bubble = document.createElement("div");
-      bubble.className = `bubble ${role}`;
-      bubble.textContent = text;
-      chat.appendChild(bubble);
-      chat.scrollTop = chat.scrollHeight;
+    function appendMessage(sender, text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+      msgDiv.textContent = text;
+      chatWindow.appendChild(msgDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    function appendImage(fileUrl) {
-      const img = document.createElement("img");
-      img.src = fileUrl;
-      img.className = "preview";
-      const bubble = document.createElement("div");
-      bubble.className = "bubble user";
-      bubble.appendChild(img);
-      chat.appendChild(bubble);
-      chat.scrollTop = chat.scrollHeight;
-    }
+    function botReply(userMsg) {
+      // Simple bot reply example — replace with your AI API or logic
+      let reply = "Scoom confused 🤔";
 
-    async function sendMessage() {
-      const userText = input.value.trim();
-      if (!userText) return;
-
-      appendMessage("user", userText);
-      chatHistory.push({ role: "user", content: userText });
-      input.value = "";
-      appendMessage("bot", "typing...");
-
-      try {
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: chatHistory
-          })
-        });
-
-        const data = await res.json();
-        chat.lastChild.remove();
-
-        if (data.choices && data.choices[0]?.message?.content) {
-          const reply = data.choices[0].message.content.trim();
-          chatHistory.push({ role: "assistant", content: reply });
-          appendMessage("bot", reply);
-        } else {
-          appendMessage("bot", "Scoom confused rn 😵");
-        }
-      } catch (err) {
-        chat.lastChild.remove();
-        appendMessage("bot", "Scoom crashed ❌");
-        console.error(err);
+      if (userMsg.toLowerCase().includes('hello')) {
+        reply = "Wsg bru, Lil Scoom here to help!";
+      } else if (userMsg.toLowerCase().includes('upgrade')) {
+        reply = "Upgrade plan coming soon, stay tuned!";
+      } else if (userMsg.trim() === '') {
+        reply = "Say something bruh.";
       }
+
+      setTimeout(() => appendMessage('bot', reply), 800);
     }
 
-    function handlePhoto(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const userMsg = chatInput.value.trim();
+      if (!userMsg) return;
 
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        appendImage(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function switchTheme() {
-      const root = document.documentElement;
-      if (currentTheme === "dark") {
-        currentTheme = "light";
-        themeBtn.textContent = "Theme: Light";
-        root.style.setProperty("--bg", "#fff");
-        root.style.setProperty("--text", "#000");
-        root.style.setProperty("--bubble-user", "#222");
-        root.style.setProperty("--bubble-bot", "#ddd");
-        root.style.setProperty("--bubble-bot-border", "#000");
-      } else if (currentTheme === "light") {
-        currentTheme = "midnight";
-        themeBtn.textContent = "Theme: Midnight";
-        root.style.setProperty("--bg", "#001a1a");
-        root.style.setProperty("--text", "#00ffff");
-        root.style.setProperty("--bubble-user", "#00ffff");
-        root.style.setProperty("--bubble-bot", "#003333");
-        root.style.setProperty("--bubble-bot-border", "#00ffff");
-      } else {
-        currentTheme = "dark";
-        themeBtn.textContent = "Theme: Dark";
-        root.style.setProperty("--bg", "#000");
-        root.style.setProperty("--text", "#0f0");
-        root.style.setProperty("--bubble-user", "#0f0");
-        root.style.setProperty("--bubble-bot", "#111");
-        root.style.setProperty("--bubble-bot-border", "#0f0");
-      }
-    }
+      appendMessage('user', userMsg);
+      chatInput.value = '';
+      botReply(userMsg);
+    });
   </script>
 </body>
 </html>

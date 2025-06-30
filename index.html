@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scoom AI Chat</title>
+  <meta charset="UTF-8" />
+  <title>Scoom AI</title>
   <style>
     :root {
       --bg: #000;
@@ -43,6 +43,8 @@
       padding: 10px;
       border-radius: 10px;
       margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
     }
 
     .bubble {
@@ -162,8 +164,8 @@
     const input = document.getElementById('userInput');
     const themeBtn = document.querySelector('.theme-btn');
     let currentTheme = "dark";
-
     const apiKey = "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";
+    let chatHistory = [];
 
     function appendMessage(role, text) {
       const bubble = document.createElement("div");
@@ -189,11 +191,12 @@
       if (!userText) return;
 
       appendMessage("user", userText);
+      chatHistory.push({ role: "user", content: userText });
       input.value = "";
       appendMessage("bot", "typing...");
 
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -201,21 +204,23 @@
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: userText }]
+            messages: chatHistory
           })
         });
 
-        const data = await response.json();
+        const data = await res.json();
         chat.lastChild.remove();
 
         if (data.choices && data.choices[0]?.message?.content) {
-          appendMessage("bot", data.choices[0].message.content.trim());
+          const reply = data.choices[0].message.content.trim();
+          chatHistory.push({ role: "assistant", content: reply });
+          appendMessage("bot", reply);
         } else {
-          appendMessage("bot", "No reply from Scoom 😔");
+          appendMessage("bot", "Scoom confused rn 😵");
         }
       } catch (err) {
         chat.lastChild.remove();
-        appendMessage("bot", "Scoom bugged out ❌");
+        appendMessage("bot", "Scoom crashed ❌");
         console.error(err);
       }
     }

@@ -4,58 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lil Scoom GPT-2 Chatbot</title>
-<style>
-  body {
-    background: #000;
-    color: #0ff;
-    font-family: monospace;
-    padding: 20px;
-    max-width: 600px;
-    margin: auto;
-  }
-  #chat {
-    height: 400px;
-    overflow-y: auto;
-    border: 1px solid #0ff;
-    padding: 10px;
-    margin-bottom: 10px;
-    background: #111;
-  }
-  .msg {
-    margin: 8px 0;
-  }
-  .user {
-    color: #0f0;
-  }
-  .bot {
-    color: #0ff;
-  }
-  input, button {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-  }
-  input {
-    width: 80%;
-    margin-right: 10px;
-    background: #222;
-    color: #0ff;
-  }
-  button {
-    background: #0ff;
-    color: #000;
-    cursor: pointer;
-  }
-</style>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Lil Scoom GPT-2 Chatbot</h1>
+<h1 style="color:#0ff; text-align:center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Lil Scoom GPT-2 Chatbot</h1>
+
 <div id="chat"></div>
-<input id="input" placeholder="Type your message..." />
-<button id="sendBtn">Send</button>
+
+<div style="display:flex; width: 375px; margin: 10px auto; justify-content: space-between;">
+  <input id="input" placeholder="Type your message..." />
+  <button id="sendBtn">Send</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@xtekky/gpt2-tfjs@latest/dist/gpt2.min.js"></script>
 <script>
@@ -63,7 +23,6 @@
   const input = document.getElementById('input');
   const sendBtn = document.getElementById('sendBtn');
 
-  // Create GPT2 instance
   const gpt2 = new GPT2();
 
   async function loadModel() {
@@ -88,7 +47,6 @@
     input.value = '';
     addMessage('bot', 'Scoom thinking...');
 
-    // Remove the "Scoom thinking..." message before response
     const thinkingMsg = chat.querySelector('.msg.bot:last-child');
 
     try {
